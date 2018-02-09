@@ -45,6 +45,7 @@ constructor(){
     userTitle:'User',
     userToggle: false,
     userInput:'',
+    currentTime: new Date().toLocaleTimeString(),
 
     pomodoroState: {
     	pomodoroTrue: false,
@@ -74,14 +75,19 @@ constructor(){
       const defaultStorage = JSON.stringify(this.state);
       localStorage.setItem("devTabData", defaultStorage); 
     }
-    //console.log(retrieveStorage);
-    //For debugging purposes.
+
+    //We setup a timer
+    this.intervalID = setInterval(() => this.tick(), 1000);
   }
 
   //This will be a re-usable function that pushes the updated state into localstorage
   updateLocalStorage(){
   	const currentStateStorage = JSON.stringify(this.state);
   	localStorage.setItem("devTabData", currentStateStorage);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
   //-------------------------------------------------------------------
 
@@ -160,6 +166,10 @@ constructor(){
   toggleUserInput = () => {
   	this.setState({userToggle: !this.state.userToggle});
   }
+
+  tick() {
+  	this.setState({currentTime: new Date().toLocaleTimeString()});
+  }
   //*****************************************************************//
   //-----------------------------------------------------------------//
   //*****************************************************************//
@@ -172,7 +182,8 @@ constructor(){
          greetingToggle={this.state.userToggle}
          greetingSubmit={this.submitUserHandler}
          greetingHandler={this.userChangeHandler}
-         greetingToggleHandler={this.toggleUserInput}/>
+         greetingToggleHandler={this.toggleUserInput}
+         currentTime={this.state.currentTime}/>
 
         <Quicklinks
          inputToggled={this.state.quickInputToggle}
